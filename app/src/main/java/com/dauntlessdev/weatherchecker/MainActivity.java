@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
             downloaderTask.execute("https://openweathermap.org/data/2.5/weather?q=" + encodedString + "&appid=b6907d289e10d714a6e88b30761fae22");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            toast.show();
         }
 
         InputMethodManager mng = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -64,10 +63,20 @@ public class MainActivity extends AppCompatActivity {
                 return result;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-                toast.show();
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Can't Find the Weather", Toast.LENGTH_LONG).show();
+                    }
+                });
             } catch (IOException e) {
                 e.printStackTrace();
-                toast.show();
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Can't Find the Weather", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
             return "Failed";
         }
@@ -88,14 +97,15 @@ public class MainActivity extends AppCompatActivity {
                     String des = jsonPart.getString("description");
                     if (!main.isEmpty() && !des.isEmpty()){
                         msg += main + ": " + des + "\n";
-                        result.setText(msg);
-                    }else{
-                        toast.show();
+
                     }
+                }
+                if (!msg.isEmpty()){
+                    result.setText(msg);
+                }else{
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                toast.show();
             }
         }
     }
@@ -103,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toast = Toast.makeText(getApplicationContext(), "Can't Find the Weather", Toast.LENGTH_LONG);
 
     }
 
